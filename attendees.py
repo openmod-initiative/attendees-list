@@ -41,6 +41,14 @@ def retrieve_attendees(usernames, output):
     having the name 'credentials.yaml'.
 
     \b
+    The following parameters are read:
+    * name
+    * avatar_url
+    * location
+    * website
+    * bio
+
+    \b
     Parameters:
         * USERNAMES: path to a text file with Discourse usernames, one username per line
         * OUTPUT: path to a file into which the user details will be written.
@@ -60,7 +68,13 @@ def attendee_list(usernames, api_username, api_key):
         index=[user["user"]["username"] for user in users],
         data={
             "name": [user["user"]["name"] for user in users],
-            "avatar_url": [AVATAR_URL.format(username) for username in usernames]
+            "avatar_url": [AVATAR_URL.format(username) for username in usernames],
+            "location": [user["user"]["location"] if "location" in user["user"].keys() else ""
+                         for user in users],
+            "website": [user["user"]["website"] if "website" in user["user"].keys() else ""
+                        for user in users],
+            "bio": [user["user"]["bio_raw"] if "bio_raw" in user["user"].keys() else ""
+                    for user in users]
         }
     )
 

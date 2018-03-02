@@ -5,12 +5,24 @@ import requests
 
 import attendees
 
-User = namedtuple("User", "username,name")
+User = namedtuple("User", "username,name,location,website,bio")
 
 
 TEST_USERS = [
-    User(username="timtroendle", name="Tim Tröndle"),
-    User(username="tom_brown", name="Tom Brown")
+    User(
+        username="timtroendle",
+        name="Tim Tröndle",
+        location="Zürich",
+        website="http://www.rep.ethz.ch/people/person-detail.html?persid=240778",
+        bio="PhD researcher in the Renewable Energy Policy group at ETH Zürich"
+    ),
+    User(
+        username="tom_brown",
+        name="Tom Brown",
+        location="",
+        website="https://www.nworbmot.org/",
+        bio=""
+    )
 ]
 
 VALID_IMAGE_MIME_TYPES = ["image/png", "image/jpeg"]
@@ -21,15 +33,6 @@ def user(request):
     return request.param
 
 
-def test_returns_name(variables, user):
-    users = attendees.attendee_list(
-        usernames=[user.username],
-        api_username=variables["api_username"],
-        api_key=variables["api_key"]
-    )
-    assert users.loc[user.username, "name"] == user.name
-
-
 def test_returns_username_as_index(variables, user):
     users = attendees.attendee_list(
         usernames=[user.username],
@@ -37,6 +40,21 @@ def test_returns_username_as_index(variables, user):
         api_key=variables["api_key"]
     )
     assert user.username in users.index
+
+
+@pytest.mark.parametrize("parameter", [
+    "name",
+    "location",
+    "website",
+    "bio"
+])
+def test_returns_parameter(variables, user, parameter):
+    users = attendees.attendee_list(
+        usernames=[user.username],
+        api_username=variables["api_username"],
+        api_key=variables["api_key"]
+    )
+    assert users.loc[user.username, parameter] == user.__getattribute__(parameter)
 
 
 def test_returns_avatar_url(variables, user):
