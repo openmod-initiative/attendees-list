@@ -2,14 +2,29 @@
 
 A simple script to create a list of workshop attendees based on Discourse user profiles.
 
+## User Guide
+
+### Installation
+
+Install the requirements with `conda` or `pip`.
+
+    $ conda install --file requirements
+
+or
+
+    $ pip install requirements
+
 ## Developer Guide
 
 ### Installation
 
-You will need ``pytest`` and its ``pytest-variables`` extension.
+Install the test requirements with `conda` or `pip`.
 
-    $ pip install pytest
-    $ pip install pytest-variables[yaml]
+    $ conda install --file test-requirements
+
+or
+
+    $ pip install test-requirements
 
 ### Run the test suite
 
