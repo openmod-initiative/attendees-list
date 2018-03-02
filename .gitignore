@@ -1,4 +1,6 @@
 credentials.yaml
+usernames.txt
+usernames.csv
 
 # Python
 *.pyc

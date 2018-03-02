@@ -6,27 +6,11 @@ A simple script to create a list of workshop attendees based on Discourse user p
 
 ### Installation
 
-Install the requirements with `conda` or `pip`.
+Install the requirements with `conda`.
 
     $ conda install --file requirements
 
-or
-
-    $ pip install requirements
-
-## Developer Guide
-
-### Installation
-
-Install the test requirements with `conda` or `pip`.
-
-    $ conda install --file test-requirements
-
-or
-
-    $ pip install test-requirements
-
-### Run the test suite
+### Retrieve users from Discourse
 
 First you will need a credentials file with Discourse credentials.
 
@@ -35,6 +19,31 @@ First you will need a credentials file with Discourse credentials.
 api_username: "<your-username>"
 api_key: "<api_key>"
 ```
+
+Second, you will need to create a text file containing the list of usernames like so:
+
+```
+# usernames.txt
+user1
+user2
+user14
+```
+
+Then you can retrieve the user details with:
+
+    $ python attendees.py <path-to-usernames> <path-to-output>
+
+## Developer Guide
+
+### Installation
+
+Install the test requirements with `conda`.
+
+    $ conda install --file test-requirements
+
+### Run the test suite
+
+Make sure you have the credentials file as described above.
 
 Then, run the test suite with py.test:
 
