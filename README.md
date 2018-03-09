@@ -48,3 +48,11 @@ Make sure you have the credentials file as described above.
 Then, run the test suite with py.test:
 
     $ py.test --variables credentials.yaml
+
+Tests are accessing the live instance and are asserting certain data to be available on that instance. They can hence fail for three reasons unrelated to this script:
+
+1) no internet connection available,
+2) the forum is unavailable for other reasons,
+3) data assumed on the forum has changed.
+
+Should tests fail, make sure these are not the reasons.

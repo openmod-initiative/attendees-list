@@ -1,3 +1,10 @@
+"""Tests the script that retrieves user information.
+
+The script is tested on the live instance through retrieving actual data. Tests
+can hence easily break, whenever (1) there is no internet connection, (2) the
+forum is unavailable, (3) test data on the server has changed. In the latter
+case, update the TEST_USERS data manually to match the information on the server.
+"""
 from collections import namedtuple
 
 import pytest
