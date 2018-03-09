@@ -12,15 +12,7 @@ Install the requirements with `conda`.
 
 ### Retrieve users from Discourse
 
-First you will need a credentials file with Discourse credentials.
-
-```yaml
-# credentials.yaml
-api_username: "<your-username>"
-api_key: "<api_key>"
-```
-
-Second, you will need to create a text file containing the list of usernames like so:
+First, you will need to create a text file containing the list of usernames like so:
 
 ```
 # usernames.txt
@@ -33,6 +25,21 @@ Then you can retrieve the user details with:
 
     $ python attendees.py <path-to-usernames> <path-to-output>
 
+
+### Retrieve users including email addresses from Discourse
+
+In addition to the username list you will need a credentials file with Discourse credentials.
+
+```yaml
+# credentials.yaml
+api_username: "<your-username>"
+api_key: "<api_key>"
+```
+
+Then you can retrieve the user details including email addresses with the following command. Your access will be logged on the server side.
+
+    $ python attendees.py --emails <path-to-usernames> <path-to-output>
+
 ## Developer Guide
 
 ### Installation
@@ -43,11 +50,13 @@ Install the test requirements with `conda`.
 
 ### Run the test suite
 
-Make sure you have the credentials file as described above.
+You can run the test suite with py.test:
 
-Then, run the test suite with py.test:
+    $ py.test
 
-    $ py.test --variables credentials.yaml
+Tests requiring authentication will be skipped per default. To run all tests including the ones requiring authentication, you will need the credential file as described above. You can then run all tests like so:
+
+    $ py.test --emails --variables credentials.yaml
 
 Tests are accessing the live instance and are asserting certain data to be available on that instance. They can hence fail for three reasons unrelated to this script:
 

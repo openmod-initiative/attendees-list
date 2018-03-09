@@ -6,6 +6,7 @@ forum is unavailable, (3) test data on the server has changed. In the latter
 case, update the TEST_USERS data manually to match the information on the server.
 """
 from collections import namedtuple
+import re
 
 import pytest
 import requests
@@ -35,6 +36,7 @@ TEST_USERS = [
 ]
 
 VALID_IMAGE_MIME_TYPES = ["image/png", "image/jpeg"]
+EMAIL_REGEX = r"[^@]+@[^@]+\.[^@]+" # https://stackoverflow.com/a/8022584/1856079
 
 
 @pytest.fixture(params=TEST_USERS)
@@ -42,12 +44,8 @@ def user(request):
     return request.param
 
 
-def test_returns_username_as_index(variables, user):
-    users = attendees.attendee_list(
-        usernames=[user.username],
-        api_username=variables["api_username"],
-        api_key=variables["api_key"]
-    )
+def test_returns_username_as_index(user):
+    users = attendees.attendee_list(usernames=[user.username])
     assert user.username in users.index
 
 
@@ -58,24 +56,30 @@ def test_returns_username_as_index(variables, user):
     "bio",
     "affiliation"
 ])
-def test_returns_parameter(variables, user, parameter):
-    users = attendees.attendee_list(
-        usernames=[user.username],
-        api_username=variables["api_username"],
-        api_key=variables["api_key"]
-    )
+def test_returns_parameter(user, parameter):
+    users = attendees.attendee_list(usernames=[user.username])
     assert users.loc[user.username, parameter] == user.__getattribute__(parameter)
 
 
-def test_returns_avatar_url(variables, user):
-    users = attendees.attendee_list(
-        usernames=[user.username],
-        api_username=variables["api_username"],
-        api_key=variables["api_key"]
-    )
+def test_returns_avatar_url(user):
+    users = attendees.attendee_list(usernames=[user.username])
     avatar_url = users.loc[user.username, "avatar_url"]
     assert _valid_image_url(avatar_url)
     assert user.username in avatar_url
+
+
+@pytest.mark.skipif(
+    not pytest.config.getoption("--emails"),
+    reason="needs --emails option to run"
+)
+def test_returns_email_addresses(variables, user):
+    users = attendees.attendee_list(
+        usernames=[user.username],
+        api_username=variables["api_username"],
+        api_key=variables["api_key"],
+        retrieve_emails=True
+    )
+    assert re.match(EMAIL_REGEX, users.loc[user.username, "email"])
 
 
 def _valid_image_url(url):
