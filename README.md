@@ -8,7 +8,7 @@ A simple script to create a list of workshop attendees based on Discourse user p
 
 Install the requirements with `conda`.
 
-    $ conda install --file requirements
+    $ conda install --file requirements.txt
 
 ### Retrieve users from Discourse
 
@@ -39,7 +39,7 @@ Then you can retrieve the user details with:
 
 Install the test requirements with `conda`.
 
-    $ conda install --file test-requirements
+    $ conda install --file test-requirements.txt
 
 ### Run the test suite
 

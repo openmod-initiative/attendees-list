@@ -1,2 +1,2 @@
 pytest
-pytest-variables[yaml]
+pytest-variables

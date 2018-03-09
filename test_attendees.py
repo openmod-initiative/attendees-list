@@ -5,7 +5,7 @@ import requests
 
 import attendees
 
-User = namedtuple("User", "username,name,location,website,bio")
+User = namedtuple("User", "username,name,location,website,bio,affiliation")
 
 
 TEST_USERS = [
@@ -14,14 +14,16 @@ TEST_USERS = [
         name="Tim Tröndle",
         location="Zürich",
         website="http://www.rep.ethz.ch/people/person-detail.html?persid=240778",
-        bio="PhD researcher in the Renewable Energy Policy group at ETH Zürich"
+        bio="PhD researcher in the Renewable Energy Policy group at ETH Zürich",
+        affiliation="ETH Zürich"
     ),
     User(
         username="tom_brown",
         name="Tom Brown",
         location="",
         website="https://www.nworbmot.org/",
-        bio=""
+        bio="",
+        affiliation=""
     )
 ]
 
@@ -46,7 +48,8 @@ def test_returns_username_as_index(variables, user):
     "name",
     "location",
     "website",
-    "bio"
+    "bio",
+    "affiliation"
 ])
 def test_returns_parameter(variables, user, parameter):
     users = attendees.attendee_list(

@@ -9,6 +9,7 @@ PATH_TO_CREDENTIALS = Path("./credentials.yaml")
 
 URL = "https://forum.openmod-initiative.org/"
 AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-initiative.org/{}/120/8_1.png"
+USER_FIELD_AFFILIATION = '3' # user fields don't have names in the api, but only numbers
 
 USER_REQUEST = URL + "users/{}.json?"
 
@@ -47,6 +48,7 @@ def retrieve_attendees(usernames, output):
     * location
     * website
     * bio
+    * affiliation
 
     \b
     Parameters:
@@ -74,9 +76,11 @@ def attendee_list(usernames, api_username, api_key):
             "website": [user["user"]["website"] if "website" in user["user"].keys() else ""
                         for user in users],
             "bio": [user["user"]["bio_raw"] if "bio_raw" in user["user"].keys() else ""
-                    for user in users]
+                    for user in users],
+            "affiliation": [user["user"]["user_fields"][USER_FIELD_AFFILIATION]
+                            for user in users]
         }
-    )
+    ).fillna("")
 
 
 def _get_user(username, api_username, api_key):
