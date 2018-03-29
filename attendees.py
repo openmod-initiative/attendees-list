@@ -109,8 +109,8 @@ def check_usernames(usernames):
             break
         else:
             items.extend(items_on_page)
-    existing_usernames = [item["user"]["username"] for item in items]
-    return [username for username in usernames if username not in existing_usernames]
+    existing_usernames = [item["user"]["username"].lower() for item in items]
+    return [username for username in usernames if username.lower() not in existing_usernames]
 
 
 def attendee_list(usernames, api_username=None, api_key=None, retrieve_emails=False):
