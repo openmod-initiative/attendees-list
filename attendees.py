@@ -1,3 +1,4 @@
+from itertools import count
 from pathlib import Path
 import yaml
 
@@ -12,7 +13,7 @@ AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-ini
 USER_FIELD_AFFILIATION = '3' # user fields don't have names in the api, but only numbers
 
 USER_REQUEST = URL + "users/{}.json?"
-ALL_USERS_REQUEST = URL + "directory_items.json?period=all&order=days_visited"
+ALL_USERS_REQUEST = URL + "directory_items.json?period=all&order=days_visited&page={}"
 ALL_USERS_WITH_EMAIL_REQUEST = URL + "admin/users/list/active.json?show_emails=true&api_key={}&api_username={}"
 
 
@@ -45,7 +46,7 @@ def check(usernames):
     Prints a list of non existing usernames.
     """
     non_existing_usernames = check_usernames(usernames)
-    if any(non_existing_usernames):
+    if not non_existing_usernames:
         print("All usernames exist.")
     else:
         print("The following usernames do not exist:")
@@ -83,7 +84,7 @@ def retrieve(usernames, output, emails):
     else:
         credentials = {"api_key": None, "api_username": None}
     non_existing_usernames = check_usernames(usernames)
-    if any(non_existing_usernames):
+    if not non_existing_usernames:
         print("Some usernames do not exist. Details will not be retrieved. Invalid names are:")
         for username in non_existing_usernames:
             print(username)
@@ -99,10 +100,16 @@ def retrieve(usernames, output, emails):
 
 def check_usernames(usernames):
     """Returns all usernames that do not exist."""
-    r = requests.get(ALL_USERS_REQUEST)
-    r.raise_for_status()
-    existing_users = r.json()
-    existing_usernames = [item["user"]["username"] for item in existing_users["directory_items"]]
+    items = []
+    for page_number in count(start=0): # results are provided in several pages
+        r = requests.get(ALL_USERS_REQUEST.format(page_number))
+        r.raise_for_status()
+        items_on_page = r.json()["directory_items"]
+        if not items_on_page:
+            break
+        else:
+            items.extend(items_on_page)
+    existing_usernames = [item["user"]["username"] for item in items]
     return [username for username in usernames if username not in existing_usernames]
 
 

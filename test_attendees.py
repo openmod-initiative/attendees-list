@@ -88,5 +88,5 @@ def _valid_image_url(url):
 
 
 def test_username_check():
-    usernames = ["timtroendle", "abcdefghijk654321"]
+    usernames = ["timtroendle", "abcdefghijk654321", "Wolf"]
     assert attendees.check_usernames(usernames) == ["abcdefghijk654321"]
