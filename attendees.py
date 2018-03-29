@@ -12,7 +12,8 @@ AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-ini
 USER_FIELD_AFFILIATION = '3' # user fields don't have names in the api, but only numbers
 
 USER_REQUEST = URL + "users/{}.json?"
-ALL_USERS_REQUEST = URL + "admin/users/list/active.json?show_emails=true&api_key={}&api_username={}"
+ALL_USERS_REQUEST = URL + "directory_items.json?period=all&order=days_visited"
+ALL_USERS_WITH_EMAIL_REQUEST = URL + "admin/users/list/active.json?show_emails=true&api_key={}&api_username={}"
 
 
 @click.group()
@@ -33,9 +34,23 @@ class Usernames(click.Path):
             raise ValueError("Username list {} does not exist.".format(path_to_file))
         with path_to_file.open('r') as f_username:
             usernames = [username.strip() for username in f_username.readlines()]
-        if not all(" " not in username for username in usernames):
-            raise ValueError("Usernames cannot contain spaces.")
         return usernames
+
+
+@attendees.command()
+@click.argument("usernames", type=Usernames())
+def check(usernames):
+    """Checks a list of usernames.
+
+    Prints a list of non existing usernames.
+    """
+    non_existing_usernames = check_usernames(usernames)
+    if any(non_existing_usernames):
+        print("All usernames exist.")
+    else:
+        print("The following usernames do not exist:")
+        for username in non_existing_usernames:
+            print(username)
 
 
 @attendees.command()
@@ -67,13 +82,28 @@ def retrieve(usernames, output, emails):
         credentials = _read_credentials()
     else:
         credentials = {"api_key": None, "api_username": None}
-    attendees = attendee_list(
-        usernames=usernames,
-        api_username=credentials["api_username"],
-        api_key=credentials["api_key"],
-        retrieve_emails=emails
-    )
-    attendees.to_csv(output)
+    non_existing_usernames = check_usernames(usernames)
+    if any(non_existing_usernames):
+        print("Some usernames do not exist. Details will not be retrieved. Invalid names are:")
+        for username in non_existing_usernames:
+            print(username)
+    else:
+        attendees = attendee_list(
+            usernames=usernames,
+            api_username=credentials["api_username"],
+            api_key=credentials["api_key"],
+            retrieve_emails=emails
+        )
+        attendees.to_csv(output)
+
+
+def check_usernames(usernames):
+    """Returns all usernames that do not exist."""
+    r = requests.get(ALL_USERS_REQUEST)
+    r.raise_for_status()
+    existing_users = r.json()
+    existing_usernames = [item["user"]["username"] for item in existing_users["directory_items"]]
+    return [username for username in usernames if username not in existing_usernames]
 
 
 def attendee_list(usernames, api_username=None, api_key=None, retrieve_emails=False):
@@ -121,7 +151,7 @@ def _read_credentials():
 def _retrieve_emails(usernames, api_username, api_key):
     assert api_username
     assert api_key
-    r = requests.get(ALL_USERS_REQUEST.format(api_key, api_username))
+    r = requests.get(ALL_USERS_WITH_EMAIL_REQUEST.format(api_key, api_username))
     r.raise_for_status()
     all_users = r.json()
     all_addresses = pd.Series(

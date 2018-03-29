@@ -85,3 +85,8 @@ def test_returns_email_addresses(variables, user):
 def _valid_image_url(url):
     r = requests.get(url)
     return r.status_code == 200 and r.headers['content-type'] in VALID_IMAGE_MIME_TYPES
+
+
+def test_username_check():
+    usernames = ["timtroendle", "abcdefghijk654321"]
+    assert attendees.check_usernames(usernames) == ["abcdefghijk654321"]
