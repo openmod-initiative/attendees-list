@@ -10,6 +10,10 @@ Install the requirements with `conda`.
 
     $ conda install --file requirements.txt
 
+You can now see what you can do:
+
+    $ python attendees.py --help
+
 ### Retrieve users from Discourse
 
 First, you will need to create a text file containing the list of usernames like so:
