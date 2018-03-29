@@ -23,7 +23,7 @@ user14
 
 Then you can retrieve the user details with:
 
-    $ python attendees.py <path-to-usernames> <path-to-output>
+    $ python attendees.py retrieve <path-to-usernames> <path-to-output>
 
 
 ### Retrieve users including email addresses from Discourse
@@ -38,7 +38,7 @@ api_key: "<api_key>"
 
 Then you can retrieve the user details including email addresses with the following command. Your access will be logged on the server side.
 
-    $ python attendees.py --emails <path-to-usernames> <path-to-output>
+    $ python attendees.py retrieve --emails <path-to-usernames> <path-to-output>
 
 ## Developer Guide
 

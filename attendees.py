@@ -15,6 +15,11 @@ USER_REQUEST = URL + "users/{}.json?"
 ALL_USERS_REQUEST = URL + "admin/users/list/active.json?show_emails=true&api_key={}&api_username={}"
 
 
+@click.group()
+def attendees():
+    pass # this defines the top level click command
+
+
 class Usernames(click.Path):
     """A username file parameter on the command line."""
     name = "usernames"
@@ -33,12 +38,12 @@ class Usernames(click.Path):
         return usernames
 
 
-@click.command()
+@attendees.command()
 @click.argument("usernames", type=Usernames())
 @click.argument("output", type=click.Path(exists=False, file_okay=True, dir_okay=False))
 @click.option('--emails/--no-emails', default=False,
               help="retrieve email addresses (credentials necessary and access will be logged)")
-def retrieve_attendees(usernames, output, emails):
+def retrieve(usernames, output, emails):
     """Retrieves user details from the openmod Discourse forum.
 
     To retrieve emails, a credential file with your api_username and api_key must exist
@@ -127,4 +132,4 @@ def _retrieve_emails(usernames, api_username, api_key):
 
 
 if __name__ == "__main__":
-    retrieve_attendees()
+    attendees()
