@@ -14,6 +14,7 @@ import requests
 import attendees
 
 User = namedtuple("User", "username,name,location,website,bio,affiliation")
+Group = namedtuple("Group", "name,id")
 
 
 TEST_USERS = [
@@ -35,12 +36,28 @@ TEST_USERS = [
     )
 ]
 
+TEST_GROUPS = [
+    Group(
+        name="admins",
+        id=1
+    ),
+    Group(
+        name="moderators",
+        id=2
+    )
+]
+
 VALID_IMAGE_MIME_TYPES = ["image/png", "image/jpeg"]
 EMAIL_REGEX = r"[^@]+@[^@]+\.[^@]+" # https://stackoverflow.com/a/8022584/1856079
 
 
 @pytest.fixture(params=TEST_USERS)
 def user(request):
+    return request.param
+
+
+@pytest.fixture(params=TEST_GROUPS)
+def group(request):
     return request.param
 
 
@@ -90,3 +107,17 @@ def _valid_image_url(url):
 def test_username_check():
     usernames = ["timtroendle", "TIMTROENDLE", "abcdefghijk654321", "Wolf"]
     assert attendees.check_usernames(usernames) == ["abcdefghijk654321"]
+
+
+@pytest.mark.parametrize("group_name", [
+    "asdasd231234",
+    "dasvhzt6"
+])
+def test_group_id_retrieval_fails_with_unknown_group_name(variables, group_name):
+    with pytest.raises(ValueError):
+        attendees._group_name_to_id(group_name, variables["api_username"], variables["api_key"])
+
+
+def test_group_id_retrieval(variables, group):
+    retrieved = attendees._group_name_to_id(group.name, variables["api_username"], variables["api_key"])
+    assert retrieved == group.id

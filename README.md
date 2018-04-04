@@ -50,15 +50,15 @@ Then you can retrieve the user details including email addresses with the follow
 
 Install the test requirements with `conda`.
 
-    $ conda install --file test-requirements.txt
+    $ conda install --file requirements-test.txt
 
 ### Run the test suite
 
-You can run the test suite with py.test:
+To run all test, you will need the credential file as described above. Then run them like so:
 
-    $ py.test
+    $ py.test --variables credentials.yaml
 
-Tests requiring authentication will be skipped per default. To run all tests including the ones requiring authentication, you will need the credential file as described above. You can then run all tests like so:
+Some tests will retrieve email addresses from the forum, an activity that is logged online. To run these tests as well, type:
 
     $ py.test --emails --variables credentials.yaml
 
