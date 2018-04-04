@@ -26,20 +26,24 @@ class Usernames(click.Path):
     """A username file parameter on the command line."""
     name = "usernames"
 
-    def __init__(self):
+    def __init__(self, invalid_ok=False):
         super().__init__(dir_okay=False, exists=True)
+        self.__invalid_ok = invalid_ok
 
     def convert(self, value, param, ctx):
         path_to_file = Path(super().convert(value, param, ctx))
-        if not path_to_file.exists():
-            raise ValueError("Username list {} does not exist.".format(path_to_file))
         with path_to_file.open('r') as f_username:
             usernames = [username.strip() for username in f_username.readlines()]
+        if not self.__invalid_ok:
+            non_existing_usernames = check_usernames(usernames)
+            if non_existing_usernames:
+                msg = "Some usernames do not exist.\nInvalid names are:\n"
+                self.fail(msg + "\n".join(non_existing_usernames))
         return usernames
 
 
 @attendees.command()
-@click.argument("usernames", type=Usernames())
+@click.argument("usernames", type=Usernames(invalid_ok=True))
 def check(usernames):
     """Checks a list of usernames.
 
@@ -55,7 +59,7 @@ def check(usernames):
 
 
 @attendees.command()
-@click.argument("usernames", type=Usernames())
+@click.argument("usernames", type=Usernames(invalid_ok=False))
 @click.argument("output", type=click.Path(exists=False, file_okay=True, dir_okay=False))
 @click.option('--emails/--no-emails', default=False,
               help="retrieve email addresses (credentials necessary and access will be logged)")
@@ -83,19 +87,13 @@ def retrieve(usernames, output, emails):
         credentials = _read_credentials()
     else:
         credentials = {"api_key": None, "api_username": None}
-    non_existing_usernames = check_usernames(usernames)
-    if not non_existing_usernames:
-        print("Some usernames do not exist. Details will not be retrieved. Invalid names are:")
-        for username in non_existing_usernames:
-            print(username)
-    else:
-        attendees = attendee_list(
-            usernames=usernames,
-            api_username=credentials["api_username"],
-            api_key=credentials["api_key"],
-            retrieve_emails=emails
-        )
-        attendees.to_csv(output)
+    attendees = attendee_list(
+        usernames=usernames,
+        api_username=credentials["api_username"],
+        api_key=credentials["api_key"],
+        retrieve_emails=emails
+    )
+    attendees.to_csv(output)
 
 
 def check_usernames(usernames):
