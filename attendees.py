@@ -9,7 +9,7 @@ import requests
 PATH_TO_CREDENTIALS = Path("./credentials.yaml")
 
 URL = "https://forum.openmod-initiative.org/"
-AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-initiative.org/{}/120/8_1.png"
+AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-initiative.org/{}/500/8_1.png"
 USER_FIELD_AFFILIATION = '3' # user fields don't have names in the api, but only numbers
 
 USER_REQUEST = URL + "users/{}.json?"
