@@ -121,3 +121,17 @@ def test_group_id_retrieval_fails_with_unknown_group_name(variables, group_name)
 def test_group_id_retrieval(variables, group):
     retrieved = attendees._group_name_to_id(group.name, variables["api_username"], variables["api_key"])
     assert retrieved == group.id
+
+
+@pytest.mark.parametrize("admin", [
+    "tom_brown",
+    "timtroendle"
+])
+def test_user_in_admin_group(variables, admin):
+    admins = attendees.group_members("admins", variables["api_username"], variables["api_key"])
+    assert admin in admins
+
+
+def test_no_moderators(variables):
+    moderators = attendees.group_members("moderators", variables["api_username"], variables["api_key"])
+    assert len(moderators) == 0

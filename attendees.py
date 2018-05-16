@@ -13,10 +13,12 @@ AVATAR_URL = "https://forum.openmod-initiative.org/user_avatar/forum.openmod-ini
 USER_FIELD_AFFILIATION = '3' # user fields don't have names in the api, but only numbers
 
 USER_REQUEST = URL + "users/{}.json?"
+GROUP_REQUEST = URL + "groups/{}.json?api_username={}&api_key={}"
 ALL_USERS_REQUEST = URL + "directory_items.json?period=all&order=days_visited&page={}"
 ALL_USERS_WITH_EMAIL_REQUEST = URL + "admin/users/list/active.json?show_emails=true&api_username={}&api_key={}"
 ALL_GROUPS_REQUEST = URL + "groups/search.json?api_username={}&api_key={}"
 ADD_USER_REQUEST = URL + "groups/{}/members.json?api_username={}&api_key={}"
+GROUP_MEMBERS_REQUEST = ADD_USER_REQUEST + "&limit={}"
 
 
 @click.group()
@@ -140,6 +142,24 @@ def add(usernames, group_name):
         print("Added all users.")
 
 
+@attendees.command()
+@click.argument("group_name", type=GroupName())
+def group(group_name):
+    """Retrieve the names of all members of a group.
+
+    A credential file with your api_username and api_key must exist
+    in the same folder having the name 'credentials.yaml'.
+
+    \b
+    Parameters:
+        * GROUP_NAME: name of the group from which all usernames shall be retrieved
+    """
+    credentials = _read_credentials()
+    group_usernames = group_members(group_name, credentials["api_username"], credentials["api_key"])
+    for username in group_usernames:
+        click.echo(username)
+
+
 def check_usernames(usernames):
     """Returns all usernames that do not exist."""
     items = []
@@ -179,8 +199,23 @@ def attendee_list(usernames, api_username=None, api_key=None, retrieve_emails=Fa
     return users
 
 
+def group_members(group_name, api_username, api_key):
+    """Retrieve the names of all members of a group."""
+    group_size = _get_group(group_name, api_username, api_key)["group"]["user_count"]
+    r = requests.get(GROUP_MEMBERS_REQUEST.format(group_name, api_username, api_key, group_size))
+    r.raise_for_status()
+    members = r.json()["members"]
+    return [member["username"] for member in members]
+
+
 def _get_user(username):
     r = requests.get(USER_REQUEST.format(username))
+    r.raise_for_status()
+    return r.json()
+
+
+def _get_group(group_id, api_username, api_key):
+    r = requests.get(GROUP_REQUEST.format(group_id, api_username, api_key))
     r.raise_for_status()
     return r.json()
 
