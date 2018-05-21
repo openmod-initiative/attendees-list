@@ -44,6 +44,17 @@ Then you can retrieve the user details including email addresses with the follow
 
     $ python attendees.py retrieve --emails <path-to-usernames> <path-to-output>
 
+
+### Build conference attendee booklet
+
+```yaml
+# booklet.yml
+title: "My amazing workshop"
+subtitle: "Date, Location"
+```
+
+    $ python booklet.py build booklet.html userdetails.csv booklet.yml
+
 ## Developer Guide
 
 ### Installation

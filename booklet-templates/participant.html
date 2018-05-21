@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-auto name-column">
+                <h5 class="card-title">{{ name }}</h5>
+                <img class="portrait" src="{{ portrait_url }}">
+            </div>
+            <div class="col-md-auto metadata-column">
+                    {% if affiliation %}<p><i class="fas fa-university"></i> {{ affiliation }}</p>{% endif %}
+                    {% if location %}<p><i class="fas fa-map-marker"></i> {{ location }}</p>{% endif %}
+                    <p><i class="fas fa-user"></i> <a href="https://forum.openmod-initiative.org/u/{{ username }}">{{ username }}</a></p>
+                    {% if website_url %}<p><i class="fas fa-link"></i> <a href="{{ website_url }}">{{ website_text }}</a></p>{% endif %}
+            </div>
+            <div class="col-md">
+                {% if bio %}<p class="card-text">{{ bio }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
