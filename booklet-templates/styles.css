@@ -1,0 +1,48 @@
+@media print{
+    html{
+        font-size: 60%;
+    }
+
+    .name-column {
+        width: 120px;
+    }
+
+    .metadata-column {
+        width: 160px;
+    }
+
+    img.portrait {
+        width: 100px;
+    }
+}
+
+@media screen{
+    .name-column {
+        width: 200px;
+    }
+
+    .metadata-column {
+        width: 240px;
+    }
+
+    img.portrait {
+        width: 160px;
+    }
+}
+
+.booklet {
+    padding: 20px;
+    max-width: 940px;
+}
+
+.metadata-column {
+    overflow-wrap: break-word;
+}
+
+.card + .card {
+    margin-top: 20px;
+}
+
+img.portrait {
+    height: auto;
+}
