@@ -26,11 +26,6 @@ def render_participant(participant):
     # Link label for website: clean out some unneccesary bits
     clean_website = participant['website'].replace('https://', '').replace('http://', '').strip('/')
 
-    # Link label: truncate with "..." if too long
-    # max_website_len = 25
-    # if len(clean_website) > max_website_len:
-    #     clean_website = clean_website[:max_website_len - 3] + ' ...'
-
     # Truncate bio if too long
     bio = participant['bio']
     if len(bio) > 550:
@@ -83,15 +78,15 @@ def booklet():
 @click.argument("metadata_file", click.Path(exists=True, file_okay=True, dir_okay=False))
 def build(out_file, users_file='./userdetails.csv', metadata_file='./booklet.yml'):
     """
-
+    \b
     Parameters
     ----------
     out_file : str
         Path to output HTML file.
-    metadata_file : str
-        Path to metadata YAML file.
     users_file: str
         Path to user details CSV file.
+    metadata_file : str
+        Path to metadata YAML file.
 
     """
     users = pd.read_csv(users_file, index_col=0)
