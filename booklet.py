@@ -77,7 +77,8 @@ def booklet():
 @click.argument("users_file", click.Path(exists=True, file_okay=True, dir_okay=False))
 @click.argument("metadata_file", click.Path(exists=True, file_okay=True, dir_okay=False))
 def build(out_file, users_file='./userdetails.csv', metadata_file='./booklet.yml'):
-    """
+    """Build the booklet.
+
     \b
     Parameters
     ----------
