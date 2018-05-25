@@ -1,6 +1,6 @@
 # attendees-list
 
-A simple script to create a list of workshop attendees based on Discourse user profiles.
+Some scripts to deal with users and groups of users on the [openmod discussion forum](https://forum.openmod-initiative.org/). Can build a workshop booklet with an overview over all attendees of the workshop.
 
 ## User Guide
 
@@ -13,37 +13,19 @@ Install the requirements with `conda`.
 You can now see what you can do:
 
     $ python attendees.py --help
+    $ python booklet.py --help
 
-### Retrieve users from Discourse
+Here are some things you might want to do:
 
-First, you will need to create a text file containing the list of usernames like so:
+### Fill group on the forum with users
 
-```
+```text
 # usernames.txt
-user1
-user2
-user14
+john_doe
+jane_doe
 ```
 
-Then you can retrieve the user details with:
-
-    $ python attendees.py retrieve <path-to-usernames> <path-to-output>
-
-
-### Retrieve users including email addresses from Discourse
-
-In addition to the username list you will need a credentials file with Discourse credentials.
-
-```yaml
-# credentials.yaml
-api_username: "<your-username>"
-api_key: "<api_key>"
-```
-
-Then you can retrieve the user details including email addresses with the following command. Your access will be logged on the server side.
-
-    $ python attendees.py retrieve --emails <path-to-usernames> <path-to-output>
-
+    $ python attendees.py usernames.txt group-name
 
 ### Build conference attendee booklet from a group on the forum
 
