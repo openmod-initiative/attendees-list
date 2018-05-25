@@ -75,13 +75,15 @@ def check(usernames):
 
 
 @attendees.command()
-@click.argument("usernames", type=Usernames(invalid_ok=False))
-@click.argument("output", type=click.Path(exists=False, file_okay=True, dir_okay=False))
+@click.option('--usernames', '-u', type=Usernames(invalid_ok=False),
+              help="Path to a text file with usernames, one per line.")
 @click.option('--emails/--no-emails', default=False,
-              help="retrieve email addresses (credentials necessary and access will be logged)")
-def retrieve(usernames, output, emails):
+              help="Retrieve email addresses (credentials necessary and access will be logged)")
+def retrieve(usernames, emails):
     """Retrieve user details.
 
+    Reads usernames from stdin, retrieves their details on the forum, and writes their details
+    as csv to stdout.
     To retrieve emails, a credential file with your api_username and api_key must exist
     in the same folder having the name 'credentials.yaml'.
 
@@ -93,23 +95,20 @@ def retrieve(usernames, output, emails):
     * website
     * bio
     * affiliation
-
-    \b
-    Parameters:
-        * USERNAMES: path to a text file with Discourse usernames, one username per line
-        * OUTPUT: path to a file into which the user details will be written.
     """
     if emails:
         credentials = _read_credentials()
     else:
         credentials = {"api_key": None, "api_username": None}
+    if not usernames:
+        usernames = click.get_text_stream('stdin').read().splitlines()
     attendees = attendee_list(
         usernames=usernames,
         api_username=credentials["api_username"],
         api_key=credentials["api_key"],
         retrieve_emails=emails
     )
-    attendees.to_csv(output)
+    attendees.to_csv(click.get_text_stream('stdout'))
 
 
 @attendees.command()

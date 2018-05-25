@@ -73,24 +73,24 @@ def booklet():
 
 
 @booklet.command()
-@click.argument("out_file", click.Path(exists=False, file_okay=True, dir_okay=False))
-@click.argument("users_file", click.Path(exists=True, file_okay=True, dir_okay=False))
 @click.argument("metadata_file", click.Path(exists=True, file_okay=True, dir_okay=False))
-def build(out_file, users_file='./userdetails.csv', metadata_file='./booklet.yml'):
+@click.option("--users", "-u", type=click.Path(exists=True, file_okay=True, dir_okay=False),
+              help="Path to user details CSV file.")
+def build(metadata_file, users):
     """Build the booklet.
+
+    Reads user details as csv from stdin and writes the booklet to stdout.
 
     \b
     Parameters
     ----------
-    out_file : str
-        Path to output HTML file.
-    users_file: str
-        Path to user details CSV file.
     metadata_file : str
         Path to metadata YAML file.
 
     """
-    users = pd.read_csv(users_file, index_col=0)
+    if not users:
+        users = click.get_text_stream('stdin')
+    users = pd.read_csv(users, index_col=0)
 
     with open(metadata_file, 'r') as f:
         metadata = yaml.load(f)
@@ -104,8 +104,7 @@ def build(out_file, users_file='./userdetails.csv', metadata_file='./booklet.yml
 
     html = render_booklet(users, metadata)
 
-    with open(out_file, 'w') as f:
-        f.write(html)
+    click.echo(html)
 
 
 if __name__ == "__main__":

@@ -45,7 +45,7 @@ Then you can retrieve the user details including email addresses with the follow
     $ python attendees.py retrieve --emails <path-to-usernames> <path-to-output>
 
 
-### Build conference attendee booklet
+### Build conference attendee booklet from a group on the forum
 
 ```yaml
 # booklet.yml
@@ -53,7 +53,7 @@ title: "My amazing workshop"
 subtitle: "Date, Location"
 ```
 
-    $ python booklet.py build booklet.html userdetails.csv booklet.yml
+    $ python attendees.py group <group-name> | python attendees.py retrieve | python booklet.py build booklet.yml > booklet.html
 
 ## Developer Guide
 
