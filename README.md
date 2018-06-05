@@ -40,7 +40,9 @@ subtitle: "Date, Location"
 
 ### Randomly allocate conference attendees to rooms
 
-    $ python attendees.py group <group-name> | python allocate.py room1 room2 > allocation.csv
+Passing ``-particants`` is optional but will allow the resulting HTML file to show full names rather than only forum usernames.
+
+    $ python attendees.py group <group-name> | python allocate.py random_allocation room1 room2 | python allocate.py html --participants participants.csv > allocation.html
 
 ## Developer Guide
 
