@@ -8,9 +8,10 @@ import pandas as pd
 @click.command()
 @click.argument("resources", nargs=-1)
 def random_allocation(resources):
-    """Allocates resource to things.
+    """Randomly allocate things to resources.
 
-    Reads things to allocate, like workshop participants, to resources. Things are read from stdin.
+    Allocates things like workshop participants to resources. Things are read from stdin.
+    List of resources is the only parameter.
 
     Writes allocation as csv to stdout.
 
