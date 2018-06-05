@@ -5,9 +5,9 @@ import pandas as pd
 import jinja2
 
 
-PARTICIPANT_HTML = './booklet-templates/participant.html'
-BOOKLET_HTML = './booklet-templates/booklet.html'
-CSS = './booklet-templates/styles.css'
+PARTICIPANT_HTML = './templates/participant.html'
+BOOKLET_HTML = './templates/booklet.html'
+CSS = './templates/styles.css'
 
 
 def render_participant(participant):
@@ -56,11 +56,18 @@ def render_booklet(participants, metadata):
     with open(BOOKLET_HTML, 'r') as f:
         html_template = jinja2.Template(f.read())
 
+    if 'html_header' in metadata:
+        with open(metadata['html_header'], 'r') as f:
+            html_header = f.read()
+    else:
+        html_header = ''
+
     html = html_template.render(
         css=css,
         participants=participants_html,
         title=metadata['title'],
-        subtitle=metadata['subtitle']
+        subtitle=metadata['subtitle'],
+        html_header=html_header,
     )
 
     return html

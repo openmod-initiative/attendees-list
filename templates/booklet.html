@@ -15,6 +15,11 @@
     <div class="booklet container-fluid">
         <h2>{{ title }}</h2>
         <h3>{{ subtitle }} </h3>
+        {% if html_header %}
+        <div class="html_header">
+            {{ html_header }}
+        </div>
+        {% endif %}
         {{ participants }}
     </div>
 </body>
