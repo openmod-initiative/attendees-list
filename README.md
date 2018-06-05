@@ -37,6 +37,11 @@ subtitle: "Date, Location"
 
     $ python attendees.py group <group-name> | python attendees.py retrieve | python booklet.py build booklet.yml > booklet.html
 
+
+### Randomly allocate conference attendees to rooms
+
+    $ python attendees.py group <group-name> | python allocate.py room1 room2 > allocation.csv
+
 ## Developer Guide
 
 ### Installation
