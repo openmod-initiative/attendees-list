@@ -3,6 +3,7 @@ from pathlib import Path
 import yaml
 
 import click
+import numpy as np
 import pandas as pd
 import requests
 
@@ -144,7 +145,7 @@ def add(usernames, group_name):
 @attendees.command()
 @click.argument("group_name", type=GroupName())
 def group(group_name):
-    """Retrieve the names of all members of a group.
+    """Retrieve the usernames of all members of a group.
 
     A credential file with your api_username and api_key must exist
     in the same folder having the name 'credentials.yaml'.
@@ -157,6 +158,22 @@ def group(group_name):
     group_usernames = group_members(group_name, credentials["api_username"], credentials["api_key"])
     for username in group_usernames:
         click.echo(username)
+
+
+@attendees.command()
+def name():
+    """Retrieves the full name of users.
+
+    Reads usernames from stdin and writes full names to stdout. If there is no name, the
+    username gets returned.
+    """
+    usernames = click.get_text_stream('stdin').read().splitlines()
+    users = attendee_list(usernames)
+    users.name.where(~users.name.replace("", np.nan).isnull(), users.index).to_csv(
+        click.get_text_stream('stdout'),
+        index=False,
+        header=False
+    )
 
 
 def check_usernames(usernames):
